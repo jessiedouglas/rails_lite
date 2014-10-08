@@ -9,10 +9,13 @@ module Phase5
     def initialize(req, route_params = {})
       @req = req
       @params = route_params
+      @partial_params = {}
       if @req.query_string
         parse_www_encoded_form(@req.query_string)
+        @params.merge!(@partial_params)
       elsif @req.body
         parse_www_encoded_form(@req.body)
+        @params.merge!(@partial_params)
       end
     end
 
@@ -41,11 +44,12 @@ module Phase5
 
       param_array.each do |param|
         if param[0].is_a?(Array)
-          hashify_param(param)
+          hashify_param(param, @partial_params)
         else
-          @params[param[0]] = param[1]
+          @partial_params[param[0]] = param[1]
         end
       end
+
     end
 
     # this should return an array
@@ -61,7 +65,7 @@ module Phase5
     end
 
     def hashify_param(param)
-      scope = @params
+      scope = @partial_params
 
       param[0].each_with_index do |key, index|
         if index == param[0].count - 1
@@ -75,5 +79,3 @@ module Phase5
 
   end
 end
-
-
