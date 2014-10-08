@@ -26,7 +26,7 @@ module Phase6
       end
 
       controller = @controller_class.new(req, res, route_params)
-      controller.invoke_action(http_method)
+      controller.invoke_action(action_name)
     end
   end
 
